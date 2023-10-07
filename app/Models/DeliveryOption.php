@@ -11,7 +11,7 @@ class DeliveryOption extends Model{
   public static function getDeliveryOptions(){
     //仮の管理者設定を用意
     $config = [
-      "min_days_offset" => 0,
+      "min_days_offset" => 1,
       "display_count" => 5,
       "shift_next_day_after_3pm" => true,
       "exclude_weekends" => true,
