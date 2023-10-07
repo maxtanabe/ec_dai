@@ -2,13 +2,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+// テスト用（Carbonライブラリで仮の日時を設定）
+// use Carbon\Carbon;
+// Carbon::setTestNow(Carbon::create(2023,10,6,14,0,0));
 
 class DeliveryOption extends Model{
   //配送希望日の選択肢を取得するメソッド
   public static function getDeliveryOptions(){
     //仮の管理者設定を用意
     $config = [
-      "min_days_offset" => 1,
+      "min_days_offset" => 0,
       "display_count" => 5,
       "shift_next_day_after_3pm" => true,
       "exclude_weekends" => true,
@@ -25,13 +28,14 @@ class DeliveryOption extends Model{
     //表示する選択肢の数の設定
     $displayCount = $config["display_count"];
     //15時以降の注文の場合の設定
+    //仮の日時でテストを行う際は、now()->hourをCarbon::now()->hourに置き換える
     if($config["shift_next_day_after_3pm"] && now()->hour >= 15){
       //現在時間を取得し、15時以降の注文の場合は最短配送日を1日後にずらす
       $minDaysOffset++;
     }
     //土日の除外設定
     if($config["exclude_weekends"]){
-      $excludeDays = [6,7]; //土曜日と日曜日
+      $excludeDays = [6,0]; //土曜日と日曜日
     } else {
       $excludeDays = [];
     }
@@ -51,7 +55,7 @@ class DeliveryOption extends Model{
       }
       $options[] = [
         "date" => $deliveryDate->format("Y-m-d"),
-        "formatted_date" => $deliveryDate->format("Y/m/d (D)"),
+        "formatted_date" => $deliveryDate->translatedFormat("Y/m/d (l)"),
       ];
     }
     return $options;
